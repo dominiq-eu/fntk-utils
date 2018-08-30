@@ -1,4 +1,193 @@
-parcelRequire=function(e,r,n,t){var i="function"==typeof parcelRequire&&parcelRequire,o="function"==typeof require&&require;function u(n,t){if(!r[n]){if(!e[n]){var f="function"==typeof parcelRequire&&parcelRequire;if(!t&&f)return f(n,!0);if(i)return i(n,!0);if(o&&"string"==typeof n)return o(n);var c=new Error("Cannot find module '"+n+"'");throw c.code="MODULE_NOT_FOUND",c}p.resolve=function(r){return e[n][1][r]||r};var l=r[n]=new u.Module(n);e[n][0].call(l.exports,p,l,l.exports,this)}return r[n].exports;function p(e){return u(p.resolve(e))}}u.isParcelRequire=!0,u.Module=function(e){this.id=e,this.bundle=u,this.exports={}},u.modules=e,u.cache=r,u.parent=i,u.register=function(r,n){e[r]=[function(e,r){r.exports=n},{}]};for(var f=0;f<n.length;f++)u(n[f]);if(n.length){var c=u(n[n.length-1]);"object"==typeof exports&&"undefined"!=typeof module?module.exports=c:"function"==typeof define&&define.amd?define(function(){return c}):t&&(this[t]=c)}return u}({1:[function(require,module,exports) {
-var n=function(n,r){return Math.floor(Math.random()*(r-n+1))+n},r=function(){var n=arguments.length>0&&void 0!==arguments[0]?arguments[0]:[];return n.length>0?t({index:randomBetween(0,n.length-1)}).In(function(r){var e=r.index;return n[e]}):randomBetween(1,100)},e=function n(r){return{andThen:function(e){return r.then?n(r.then(e)):n(e(r))},value:function(){return r}}},t=function(n){return{In:function(r){return r(n)}}},u=function(n){return function(r,e){return void 0===e?function(e){return n(r,e)}:n(r,e)}},o=function(n,r,e){var t=n.toLowerCase();return console[t]("["+n+"] "+r,e),e},i=function(n){return{debug:u(function(r,e){return o("Debug","["+n+"] ["+r+"]",e)}),error:u(function(r,e){return o("Error","["+n+"] ["+r+"]",e)})}};module.exports={Random:r,RandomBetween:n,Pipe:e,Let:t,Log:i};
+// modules are defined as an array
+// [ module function, map of requires ]
+//
+// map of requires is short require name -> numeric require
+//
+// anything defined in a previous bundle is accessed via the
+// orig method which is the require for previous bundles
+
+// eslint-disable-next-line no-global-assign
+parcelRequire = (function (modules, cache, entry, globalName) {
+  // Save the require from previous bundle to this closure if any
+  var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
+  var nodeRequire = typeof require === 'function' && require;
+
+  function newRequire(name, jumped) {
+    if (!cache[name]) {
+      if (!modules[name]) {
+        // if we cannot find the module within our internal map or
+        // cache jump to the current global require ie. the last bundle
+        // that was added to the page.
+        var currentRequire = typeof parcelRequire === 'function' && parcelRequire;
+        if (!jumped && currentRequire) {
+          return currentRequire(name, true);
+        }
+
+        // If there are other bundles on this page the require from the
+        // previous one is saved to 'previousRequire'. Repeat this as
+        // many times as there are bundles until the module is found or
+        // we exhaust the require chain.
+        if (previousRequire) {
+          return previousRequire(name, true);
+        }
+
+        // Try the node require function if it exists.
+        if (nodeRequire && typeof name === 'string') {
+          return nodeRequire(name);
+        }
+
+        var err = new Error('Cannot find module \'' + name + '\'');
+        err.code = 'MODULE_NOT_FOUND';
+        throw err;
+      }
+
+      localRequire.resolve = resolve;
+
+      var module = cache[name] = new newRequire.Module(name);
+
+      modules[name][0].call(module.exports, localRequire, module, module.exports, this);
+    }
+
+    return cache[name].exports;
+
+    function localRequire(x){
+      return newRequire(localRequire.resolve(x));
+    }
+
+    function resolve(x){
+      return modules[name][1][x] || x;
+    }
+  }
+
+  function Module(moduleName) {
+    this.id = moduleName;
+    this.bundle = newRequire;
+    this.exports = {};
+  }
+
+  newRequire.isParcelRequire = true;
+  newRequire.Module = Module;
+  newRequire.modules = modules;
+  newRequire.cache = cache;
+  newRequire.parent = previousRequire;
+  newRequire.register = function (id, exports) {
+    modules[id] = [function (require, module) {
+      module.exports = exports;
+    }, {}];
+  };
+
+  for (var i = 0; i < entry.length; i++) {
+    newRequire(entry[i]);
+  }
+
+  if (entry.length) {
+    // Expose entry point to Node, AMD or browser globals
+    // Based on https://github.com/ForbesLindesay/umd/blob/master/template.js
+    var mainExports = newRequire(entry[entry.length - 1]);
+
+    // CommonJS
+    if (typeof exports === "object" && typeof module !== "undefined") {
+      module.exports = mainExports;
+
+    // RequireJS
+    } else if (typeof define === "function" && define.amd) {
+     define(function () {
+       return mainExports;
+     });
+
+    // <script>
+    } else if (globalName) {
+      this[globalName] = mainExports;
+    }
+  }
+
+  // Override the current require with this new one
+  return newRequire;
+})({1:[function(require,module,exports) {
+/*
+    utils.js
+
+
+*/
+
+//
+// -- Helper --
+//
+
+// RandomBetween :: Int -> Int -> Int
+var RandomBetween = function RandomBetween(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+// Random :: List a -> a | Int
+var Random = function Random() {
+    var list = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+    return list.length > 0 ? Let({ index: RandomBetween(0, list.length - 1) }).In(function (_ref) {
+        var index = _ref.index;
+        return list[index];
+    }) : randomBetween(1, 100);
+};
+
+//
+// -- Structures --
+//
+
+var Pipe = function Pipe(x) {
+    return {
+        andThen: function andThen(fn) {
+            return x.then ? Pipe(x.then(fn)) : Pipe(fn(x));
+        },
+        value: function value() {
+            return x;
+        }
+    };
+};
+
+var Let = function Let(vars) {
+    return {
+        In: function In(f) {
+            return f(vars);
+        }
+    };
+};
+
+//
+// -- Logging --
+//
+
+var curry = function curry(f) {
+    return function (a, b) {
+        return b === undefined ? function (b) {
+            return f(a, b);
+        } : f(a, b);
+    };
+};
+var doLog = function doLog(name, msg, x) {
+    var cat = name.toLowerCase();
+    console[cat]('[' + name + '] ' + msg, x); // eslint-disable-line
+    return x;
+};
+var Log = function Log(msg) {
+    return {
+        debug: curry(function (txt, x) {
+            return doLog('Debug', '[' + msg + '] [' + txt + ']', x);
+        }),
+        error: curry(function (txt, x) {
+            return doLog('Error', '[' + msg + '] [' + txt + ']', x);
+        })
+    };
+};
+
+// Module Api
+module.exports = {
+    // Helper
+    Random: Random,
+    RandomBetween: RandomBetween,
+
+    // Structures
+    Pipe: Pipe,
+    Let: Let,
+    Log: Log
+};
 },{}]},{},[1], null)
 //# sourceMappingURL=/utils.map

@@ -15,7 +15,7 @@ const RandomBetween = (min, max) =>
 // Random :: List a -> a | Int
 const Random = (list = []) =>
     list.length > 0
-        ? Let({ index: randomBetween(0, list.length - 1) }).In(
+        ? Let({ index: RandomBetween(0, list.length - 1) }).In(
               ({ index }) => list[index]
           )
         : randomBetween(1, 100)
