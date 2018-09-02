@@ -25,7 +25,7 @@ const Random = (list = []) =>
 //
 
 const Pipe = x => ({
-    andThen: fn => (x.then ? Pipe(x.then(fn)) : Pipe(fn(x))),
+    andThen: fn => Pipe(fn(x)),
     value: () => x
 })
 
@@ -44,8 +44,8 @@ const doLog = (name, msg, x) => {
     return x
 }
 const Log = msg => ({
-    debug: curry((txt, x) => doLog('Debug', `[${msg}] [${txt}]`, x)),
-    error: curry((txt, x) => doLog('Error', `[${msg}] [${txt}]`, x))
+    debug: curry((txt, x) => doLog('Debug', `[${msg}] [${txt}] Value:`, x)),
+    error: curry((txt, x) => doLog('Error', `[${msg}] [${txt}] Value:`, x))
 })
 
 // Module Api
